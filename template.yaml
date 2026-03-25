@@ -1,0 +1,88 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: VPN License Automation Lambda (SAM)
+
+Globals:
+  Function:
+    Timeout: 10
+    Runtime: nodejs18.x
+    Architectures:
+      - x86_64
+    Tracing: Active
+    LoggingConfig:
+      LogFormat: JSON
+
+# ✅ Parameter (Reintegrated Properly)
+Parameters:
+  SecretsArn:
+    Type: String
+    Description: ARN of the Secrets Manager secret
+    Default: arn:aws:secretsmanager:us-east-1:079092240082:secret:oldgloryvpn_sm-N6d3s5
+
+Resources:
+
+  # ✅ Common Dependencies Layer
+  CommonLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: vpn-common-layer
+      Description: Shared dependencies (axios, utils, etc.)
+      ContentUri: layers/common/
+      CompatibleRuntimes:
+        - nodejs18.x
+
+  # ✅ DLQ (Failure Handling)
+  RechargeDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: recharge-webhook-dlq
+
+  # ✅ Main Queue
+  RechargeQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: recharge-webhook-queue
+      VisibilityTimeout: 30
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt RechargeDLQ.Arn
+        maxReceiveCount: 1
+
+  # ✅ Lambda Function
+  SubscriptionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: vpn-subscription-processor
+      CodeUri: lambdas/subscription/
+      Handler: lambda_handler.handler
+      Layers:
+        - !Ref CommonLayer
+
+      # ✅ Inject Secrets ARN into Lambda
+      Environment:
+        Variables:
+          SECRETS_ARN: !Ref SecretsArn
+
+      # ✅ IAM Permissions for Secrets Manager
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSSecretsManagerGetSecretValuePolicy:
+            SecretArn: !Ref SecretsArn
+
+      # ✅ SQS Trigger
+      Events:
+        RechargeQueueEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt RechargeQueue.Arn
+            BatchSize: 1
+
+Outputs:
+
+  SubscriptionLambdaArn:
+    Description: Subscription Lambda ARN
+    Value: !GetAtt SubscriptionFunction.Arn
+
+  SQSQueueUrl:
+    Description: SQS Queue URL
+    Value: !Ref RechargeQueue
+

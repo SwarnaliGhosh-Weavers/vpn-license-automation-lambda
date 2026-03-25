@@ -1,0 +1,16 @@
+version = 0.1
+
+[default.deploy.parameters]
+stack_name = "vpn-lambda"
+resolve_s3 = true
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = true
+s3_prefix = "vpn-lambda"
+disable_rollback = true
+parameter_overrides = "SecretsArn=\"arn:aws:secretsmanager:us-east-1:079092240082:secret:oldgloryvpn_sm-N6d3s5\""
+image_repositories = []
+
+
+
+[default.global.parameters]
+region = "us-east-1"
