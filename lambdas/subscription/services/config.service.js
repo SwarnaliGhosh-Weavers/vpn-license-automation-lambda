@@ -27,9 +27,6 @@ async function loadConfig() {
 
     const secrets = JSON.parse(response.SecretString);
 
-    logger.info('secrets', secrets);
-
-
     // ✅ Normalize config (VERY IMPORTANT)
     cachedConfig = {
       rechargeApiToken: secrets.RECHARGE_API_KEY,
