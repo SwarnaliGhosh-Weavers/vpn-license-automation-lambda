@@ -12,18 +12,10 @@ async function handleSubscriptionCreated(payload) {
         if (!customerId) {
             throw new Error('customer_id missing in payload');
         }
-
         const rechargeCustomer = await getRechargeCustomer(customerId);
-
-        const rechargeCustomerData = rechargeCustomer?.customer;
-
         const customer = {
-            ...(payload.customer || {}),
-            ...rechargeCustomerData, 
             external_customer_id:
-                rechargeCustomerData?.external_customer_id ||
-                payload?.customer?.external_customer_id ||
-                null,
+                rechargeCustomer?.external_customer_id || null
         };
 
         await callInternalAPI(customer, subscription);
