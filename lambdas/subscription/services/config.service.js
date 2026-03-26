@@ -1,4 +1,5 @@
 const { SecretsManagerClient, GetSecretValueCommand } = require('@aws-sdk/client-secrets-manager');
+const logger = require('../utils/logger');
 
 const secretsClient = new SecretsManagerClient({
   region: process.env.AWS_REGION,
@@ -25,6 +26,9 @@ async function loadConfig() {
     const response = await secretsClient.send(command);
 
     const secrets = JSON.parse(response.SecretString);
+
+    logger.info('secrets', secrets);
+
 
     // ✅ Normalize config (VERY IMPORTANT)
     cachedConfig = {
