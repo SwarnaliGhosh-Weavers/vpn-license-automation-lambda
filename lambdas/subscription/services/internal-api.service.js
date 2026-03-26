@@ -25,7 +25,7 @@ async function callInternalAPI(data) {
       data: response.data,
     });
 
-    return response.data;
+    // return response.data;
 
   } catch (error) {
     logger.error('Internal API failed', {
