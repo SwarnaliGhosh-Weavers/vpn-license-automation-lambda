@@ -1,5 +1,6 @@
 const axios = require('axios');
 const { getConfig } = require('./config.service');
+const logger = require('../utils/logger');
 
 async function getRechargeCustomer(customerId) {
   const config = await getConfig();
@@ -13,6 +14,8 @@ async function getRechargeCustomer(customerId) {
     },
     timeout: 5000,
   });
+
+  logger.info('Recharge customer fetched', customerId, response.data);
 
   return response.data.customer;
 }

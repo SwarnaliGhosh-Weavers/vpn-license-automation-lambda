@@ -15,17 +15,20 @@ async function handleSubscriptionCreated(payload) {
 
         const rechargeCustomer = await getRechargeCustomer(customerId);
 
-        const mergedData = {
-            ...payload,
-            external_customer_id: rechargeCustomer.external_customer_id,
+        const customer = {
+            ...(payload.customer || {}),
+            external_customer_id:
+                rechargeCustomer?.external_customer_id ||
+                payload?.customer?.external_customer_id ||
+                null,
         };
 
-        await callInternalAPI(mergedData);
+        await callInternalAPI(customer);
 
         logger.info('Subscription processed successfully', {
-            subscriptionId: subscription.id,
+            subscriptionId: subscription.id
         });
-        
+
     } catch (error) {
         logger.error('Error in subscription service', {
             error: error.message,
