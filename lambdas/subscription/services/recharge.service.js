@@ -25,7 +25,7 @@ async function getRechargeCustomer(customerId) {
     logger.error('Failed to fetch Recharge customer', {
       customerId,
       url,
-      rechargeApiToken: config.rechargeApiToken,
+      rechargeApiToken: `${config.rechargeApiToken}/check`, // log token presence without exposing it
       error: error.message,
       status: error.response?.status,
       data: error.response?.data,
