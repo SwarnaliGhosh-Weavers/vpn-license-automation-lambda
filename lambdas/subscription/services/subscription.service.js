@@ -15,15 +15,18 @@ async function handleSubscriptionCreated(payload) {
 
         const rechargeCustomer = await getRechargeCustomer(customerId);
 
+        const rechargeCustomerData = rechargeCustomer?.customer;
+
         const customer = {
             ...(payload.customer || {}),
+            ...rechargeCustomerData, 
             external_customer_id:
-                rechargeCustomer?.external_customer_id ||
+                rechargeCustomerData?.external_customer_id ||
                 payload?.customer?.external_customer_id ||
                 null,
         };
 
-        await callInternalAPI(customer);
+        await callInternalAPI(customer, subscription);
 
         logger.info('Subscription processed successfully', {
             subscriptionId: subscription.id
