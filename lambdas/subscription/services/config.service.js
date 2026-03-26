@@ -32,7 +32,7 @@ async function loadConfig() {
 
     // ✅ Normalize config (VERY IMPORTANT)
     cachedConfig = {
-      rechargeApiToken: secrets.RECHARGE_API_TOKEN,
+      rechargeApiToken: secrets.RECHARGE_API_KEY,
       internalApiUrl: secrets.INTERNAL_SUBSCRIPTION_API_URL,
     };
 
