@@ -1,3 +1,4 @@
+const logger = require("../utils/logger");
 const { callInternalAPI } = require("./internal-api.service");
 const { getRechargeCustomer } = require("./recharge.service");
 

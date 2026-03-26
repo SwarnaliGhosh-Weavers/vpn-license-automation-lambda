@@ -1,5 +1,6 @@
 const { EVENT_TYPES } = require("../constants/event-types");
 const { handleSubscriptionCreated } = require("../services/subscription.service");
+const logger = require("../utils/logger");
 
 async function processEvent(body) {
   const { type, payload } = body;
