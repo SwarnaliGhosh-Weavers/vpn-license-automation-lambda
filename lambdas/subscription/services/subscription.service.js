@@ -18,7 +18,11 @@ async function handleSubscriptionCreated(payload) {
                 rechargeCustomer?.external_customer_id || null
         };
 
-        await callInternalAPI(customer, subscription);
+        await callInternalAPI({ 
+            type: 'subscription_created', 
+            customer, 
+            subscription
+        });
 
         logger.info('Subscription processed successfully', {
             subscriptionId: subscription.id
