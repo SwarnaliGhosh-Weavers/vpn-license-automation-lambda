@@ -1,8 +1,8 @@
 const EVENT_TYPES = {
   SUBSCRIPTION_CREATED: 'subscription_created',
   CHARGE_PAID: 'charge_paid',
-  SUBSCRIPTION_CANCELLED: 'subscription_cancelled'
-
+  SUBSCRIPTION_CANCELLED: 'subscription_cancelled',
+  CHARGE_MAX_RETRIES_REACHED: 'charge_max_retries_reached'
 };
 
 module.exports = { EVENT_TYPES };

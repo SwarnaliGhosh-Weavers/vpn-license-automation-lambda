@@ -20,6 +20,9 @@ async function processEvent(body) {
     // case EVENT_TYPES.SUBSCRIPTION_CANCELLED:
     //   await handleSubscriptionCancelled(payload);
 
+    case EVENT_TYPES.CHARGE_MAX_RETRIES_REACHED:
+      await handleChargeMaxRetriesReached(payload);
+
     default:
       logger.warn('Unknown event type', { type });
   }
