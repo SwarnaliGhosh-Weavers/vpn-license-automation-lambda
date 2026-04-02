@@ -1,6 +1,7 @@
 const axios = require('axios');
 const { getConfig } = require('./config.service');
 const logger = require('../utils/logger');
+const { EVENT_TYPES } = require('../constants/event-types');
 
 async function callInternalAPI(payload) {
   try {
@@ -13,12 +14,17 @@ async function callInternalAPI(payload) {
     let body = {};
 
     switch (type) {
-      case 'subscription_created':
+      case EVENT_TYPES.SUBSCRIPTION_CREATED:
         body = { customer, subscription };
         url = `${baseUrl}/subscription-created`
         break;
 
-      case 'charge_paid':
+      case EVENT_TYPES.SUBSCRIPTION_UPDATED:
+        body = { payload: raw }; // full webhook payload
+        url = `${baseUrl}/subscription-updated`
+        break;
+
+      case EVENT_TYPES.CHARGE_PAID :
         body = { payload: raw }; // full webhook payload
         url = `${baseUrl}/charge-paid`
         break;
